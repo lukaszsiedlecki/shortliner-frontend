@@ -21,7 +21,8 @@ const App = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setShortUrl(`${process.env.REACT_APP_BACKEND_URL}/shorten/${data.shortCode}`); // Teraz link prowadzi do backendu
+                setShortUrl(`${process.env.REACT_APP_BACKEND_URL}/shorten/${data.shortCode}`);
+                setUrl('');
             } else {
                 setError(data.error || 'Błąd przy skracaniu URL.');
             }
