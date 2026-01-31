@@ -66,6 +66,46 @@ npm run dev
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
 
+## Docker
+
+### Using Docker Compose (recommended)
+
+1. Create `.env.docker` file or use the existing one:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8081
+```
+
+2. Run with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+3. Stop the container:
+
+```bash
+docker-compose down
+```
+
+### Using Docker manually
+
+1. Build the image:
+
+```bash
+docker build -t shortliner-frontend .
+```
+
+2. Run the container:
+
+```bash
+docker run -p 3000:3000 \
+  -e NEXT_PUBLIC_API_URL=http://localhost:8081 \
+  shortliner-frontend
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000)
+
 ## Scripts
 
 - `npm run dev` - Start development server
