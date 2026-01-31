@@ -108,22 +108,3 @@ shortliner-frontend/
    }
    ```
 4. The app displays a clickable link to `{API_URL}/shorten/{shortCode}`
-
-## Deployment
-
-### Vercel (recommended)
-
-1. Push code to a Git repository
-2. Connect the repository to [Vercel](https://vercel.com)
-3. Set environment variables in the Vercel dashboard:
-    - `NEXT_PUBLIC_API_URL` = Your production API URL
-4. Deploy!
-
-### Other platforms
-
-```bash
-npm run build
-npm run start
-```
-
-Make sure the `NEXT_PUBLIC_API_URL` variable is set in the production environment.
