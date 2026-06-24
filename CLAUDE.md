@@ -15,7 +15,7 @@ No test suite is configured.
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_API_URL` to the backend base URL (default: `http://localhost:8081`).
+Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_API_URL` to the backend base URL (default: `http://localhost:8080`).
 
 For Docker: `docker-compose up -d` (reads `.env.docker`).
 

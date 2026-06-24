@@ -21,7 +21,7 @@ A simple and modern URL shortener application built with Next.js 16 and React 19
 
 - Node.js 20+
 - npm/yarn/pnpm
-- Shortliner API backend running (default: http://localhost:8081)
+- Shortliner API backend running (default: http://localhost:8080)
 
 ## Installation
 
@@ -49,7 +49,7 @@ cp .env.example .env.local
 For development environment (`.env.local`):
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8081
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 For production environment (`.env.production`):
@@ -73,7 +73,7 @@ The application will be available at [http://localhost:3000](http://localhost:30
 1. Create `.env.docker` file or use the existing one:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8081
+NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
 2. Run with Docker Compose:
@@ -100,7 +100,7 @@ docker build -t shortliner-frontend .
 
 ```bash
 docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_API_URL=http://localhost:8081 \
+  -e NEXT_PUBLIC_API_URL=http://localhost:8080 \
   shortliner-frontend
 ```
 

@@ -3,7 +3,7 @@
 import {useEffect, useState} from 'react';
 import {Language, translations} from './locales';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
 export default function Home() {
   const [language, setLanguage] = useState<Language>('pl');
