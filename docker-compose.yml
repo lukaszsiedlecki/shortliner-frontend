@@ -8,6 +8,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+      - SHORTLINER_BACKEND_URL=${SHORTLINER_BACKEND_URL:-http://localhost:8080}
+      - ANALYTICS_BACKEND_URL=${ANALYTICS_BACKEND_URL:-http://localhost:8082}
     restart: unless-stopped
     image: shortliner-frontend

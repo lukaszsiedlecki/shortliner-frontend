@@ -3,8 +3,6 @@
 import {useEffect, useState} from 'react';
 import {Language, translations} from './locales';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
 export default function Home() {
   const [language, setLanguage] = useState<Language>('pl');
   const [url, setUrl] = useState('');
@@ -39,7 +37,7 @@ export default function Home() {
     setShortCode('');
 
     try {
-      const response = await fetch(`${API_URL}/shorten`, {
+      const response = await fetch('/api/shortliner/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,12 +113,12 @@ export default function Home() {
                 <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-gray-600 mb-2">{t.shortenedLinkLabel}</p>
                   <a
-                      href={`${API_URL}/shorten/${shortCode}`}
+                      href={`/api/shortliner/shorten/${shortCode}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-lg font-mono font-semibold text-blue-600 hover:text-blue-800 underline block break-all"
                   >
-                    {API_URL}/shorten/{shortCode}
+                    {window.location.origin}/api/shortliner/shorten/{shortCode}
                   </a>
                 </div>
             )}
