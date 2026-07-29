@@ -8,4 +8,21 @@ export const pl = {
     errorGeneric: 'Wystąpił błąd',
     shortenedLinkLabel: 'Skrócony link:',
     language: 'Język',
+
+    tabShorten: 'Skracanie linków',
+    tabPremium: 'Premium',
+
+    premiumTitle: 'Premium',
+    premiumPrice: '9,99 PLN',
+    premiumDescription: 'Jednorazowy zakup dostępu Premium.',
+    premiumBuyButton: 'Kup Premium',
+    premiumProcessing: 'Przetwarzanie płatności...',
+    premiumPendingNotice: 'To może chwilę potrwać.',
+    premiumSuccessTitle: 'Płatność zakończona sukcesem',
+    premiumSuccessDisclaimer:
+        'Ta płatność została tylko zarejestrowana — żadna funkcja nie została jeszcze automatycznie odblokowana.',
+    premiumFailedTitle: 'Płatność nieudana',
+    premiumRetryButton: 'Spróbuj ponownie',
+    premiumPaymentIdLabel: 'ID płatności:',
+    premiumErrorGeneric: 'Wystąpił błąd podczas płatności',
 } as const;

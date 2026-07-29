@@ -1,0 +1,167 @@
+'use client';
+
+import {useEffect, useState} from 'react';
+import {Translation} from './locales';
+
+const STORAGE_KEY = 'premiumPayment';
+const POLL_INTERVAL_MS = 2000;
+const PREMIUM_AMOUNT = 9.99;
+const PREMIUM_CURRENCY = 'PLN';
+
+type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
+
+type StoredPayment = {
+  id: string;
+  status: PaymentStatus;
+};
+
+type PaymentResponse = {
+  id: string;
+  status: PaymentStatus;
+  failureReason: string | null;
+};
+
+export default function PremiumTab({t}: {t: Translation}) {
+  const [payment, setPayment] = useState<StoredPayment | null>(null);
+  const [failureReason, setFailureReason] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // Load saved payment from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    try {
+      setPayment(JSON.parse(saved));
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
+
+  const savePayment = (next: StoredPayment | null) => {
+    setPayment(next);
+    if (next) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } else {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  };
+
+  // Poll for a final status while a payment is pending
+  useEffect(() => {
+    if (!payment || payment.status !== 'PENDING') return;
+
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/payment/api/payments/${payment.id}`);
+        if (!response.ok || cancelled) return;
+        const data: PaymentResponse = await response.json();
+        if (cancelled || data.status === 'PENDING') return;
+        savePayment({id: data.id, status: data.status});
+        setFailureReason(data.failureReason ?? null);
+      } catch {
+        // transient network/poll error, retry on next tick
+      }
+    };
+
+    const interval = setInterval(poll, POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payment?.id, payment?.status]);
+
+  const handleBuy = async () => {
+    setLoading(true);
+    setError('');
+    setFailureReason(null);
+
+    try {
+      const response = await fetch('/api/payment/api/payments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Idempotency-Key': crypto.randomUUID(),
+        },
+        body: JSON.stringify({amount: PREMIUM_AMOUNT, currency: PREMIUM_CURRENCY}),
+      });
+
+      if (!response.ok) {
+        throw new Error(t.premiumErrorGeneric);
+      }
+
+      const data: PaymentResponse = await response.json();
+      savePayment({id: data.id, status: data.status});
+      if (data.status !== 'PENDING') {
+        setFailureReason(data.failureReason ?? null);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t.premiumErrorGeneric);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    savePayment(null);
+    setFailureReason(null);
+    setError('');
+  };
+
+  return (
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-center text-gray-800">{t.premiumTitle}</h2>
+        <p className="text-center text-gray-600">{t.premiumDescription}</p>
+        <p className="text-center text-3xl font-bold text-gray-800">{t.premiumPrice}</p>
+
+        {(!payment || payment.status === 'FAILED') && (
+            <button
+                onClick={handleBuy}
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? t.premiumProcessing : t.premiumBuyButton}
+            </button>
+        )}
+
+        {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              {error}
+            </div>
+        )}
+
+        {payment?.status === 'PENDING' && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
+              <div
+                  className="h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
+              <span className="text-blue-700">{t.premiumPendingNotice}</span>
+            </div>
+        )}
+
+        {payment?.status === 'SUCCESS' && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-2">
+              <p className="font-semibold text-green-800">{t.premiumSuccessTitle}</p>
+              <p className="text-sm text-gray-600">
+                {t.premiumPaymentIdLabel} <span className="font-mono">{payment.id}</span>
+              </p>
+              <p className="text-sm text-gray-600">{t.premiumSuccessDisclaimer}</p>
+            </div>
+        )}
+
+        {payment?.status === 'FAILED' && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg space-y-2">
+              <p className="font-semibold text-red-800">{t.premiumFailedTitle}</p>
+              {failureReason && <p className="text-sm text-red-700">{failureReason}</p>}
+              <button
+                  onClick={handleRetry}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                {t.premiumRetryButton}
+              </button>
+            </div>
+        )}
+      </div>
+  );
+}

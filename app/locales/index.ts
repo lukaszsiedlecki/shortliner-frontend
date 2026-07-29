@@ -7,4 +7,4 @@ export const translations = {
 } as const;
 
 export type Language = keyof typeof translations;
-export type Translation = typeof pl;
+export type Translation = {[K in keyof typeof pl]: string};

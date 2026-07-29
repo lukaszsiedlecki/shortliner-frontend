@@ -14,7 +14,7 @@ const HOP_BY_HOP_HEADERS = new Set([
 
 export async function proxyToBackend(
     request: NextRequest,
-    backendUrlEnvVar: 'SHORTLINER_BACKEND_URL' | 'ANALYTICS_BACKEND_URL',
+    backendUrlEnvVar: 'SHORTLINER_BACKEND_URL' | 'ANALYTICS_BACKEND_URL' | 'PAYMENT_BACKEND_URL',
     path: string[] | undefined,
 ) {
   const backendUrl = process.env[backendUrlEnvVar];

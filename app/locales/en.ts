@@ -8,4 +8,21 @@ export const en = {
     errorGeneric: 'An error occurred',
     shortenedLinkLabel: 'Shortened link:',
     language: 'Language',
+
+    tabShorten: 'Link Shortening',
+    tabPremium: 'Premium',
+
+    premiumTitle: 'Premium',
+    premiumPrice: '9.99 PLN',
+    premiumDescription: 'One-time purchase of Premium access.',
+    premiumBuyButton: 'Buy Premium',
+    premiumProcessing: 'Processing payment...',
+    premiumPendingNotice: 'This may take a moment.',
+    premiumSuccessTitle: 'Payment successful',
+    premiumSuccessDisclaimer:
+        'This payment has only been recorded — no feature has been automatically unlocked yet.',
+    premiumFailedTitle: 'Payment failed',
+    premiumRetryButton: 'Try again',
+    premiumPaymentIdLabel: 'Payment ID:',
+    premiumErrorGeneric: 'An error occurred during payment',
 } as const;

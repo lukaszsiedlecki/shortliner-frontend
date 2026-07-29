@@ -10,5 +10,6 @@ services:
     environment:
       - SHORTLINER_BACKEND_URL=${SHORTLINER_BACKEND_URL:-http://localhost:8080}
       - ANALYTICS_BACKEND_URL=${ANALYTICS_BACKEND_URL:-http://localhost:8082}
+      - PAYMENT_BACKEND_URL=${PAYMENT_BACKEND_URL:-http://localhost:8083}
     restart: unless-stopped
     image: shortliner-frontend
