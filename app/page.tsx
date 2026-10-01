@@ -1,6 +1,8 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import {apiFetch} from '@/lib/api';
+import {AuthControls} from './auth';
 import {Language, translations} from './locales';
 import PremiumTab from './PremiumTab';
 
@@ -41,7 +43,7 @@ export default function Home() {
     setShortCode('');
 
     try {
-      const response = await fetch('/api/shortliner/shorten', {
+      const response = await apiFetch('/api/shortliner/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,6 +51,10 @@ export default function Home() {
         body: JSON.stringify({url}),
       });
 
+      if (response.status === 401) {
+        // Shortening is allowed anonymously; 401 only means the gateway session's token expired.
+        throw new Error(t.authSessionExpired);
+      }
       if (!response.ok) {
         throw new Error(t.errorShortening);
       }
@@ -66,9 +72,10 @@ export default function Home() {
   return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-8">
-          {/* Language Selector */}
-          <div className="flex justify-end mb-4">
-            <div className="flex items-center gap-2">
+          {/* Language Selector + auth */}
+          <div className="flex justify-between items-center mb-4">
+            <AuthControls t={t}/>
+            <div className="flex items-center gap-2 ml-auto">
               <label htmlFor="language" className="text-sm text-gray-600">
                 {t.language}:
               </label>

@@ -1,6 +1,8 @@
 'use client';
 
 import {useEffect, useState} from 'react';
+import {apiFetch} from '@/lib/api';
+import {LoginPrompt, useMe} from './auth';
 import {Translation} from './locales';
 
 const STORAGE_KEY = 'premiumPayment';
@@ -26,6 +28,8 @@ export default function PremiumTab({t}: {t: Translation}) {
   const [failureReason, setFailureReason] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const me = useMe();
 
   // Load saved payment from localStorage
   useEffect(() => {
@@ -49,13 +53,18 @@ export default function PremiumTab({t}: {t: Translation}) {
 
   // Poll for a final status while a payment is pending
   useEffect(() => {
-    if (!payment || payment.status !== 'PENDING') return;
+    if (!payment || payment.status !== 'PENDING' || me.status !== 'authenticated' || sessionExpired) return;
 
     let cancelled = false;
     const poll = async () => {
       try {
-        const response = await fetch(`/api/payment/api/payments/${payment.id}`);
-        if (!response.ok || cancelled) return;
+        const response = await apiFetch(`/api/payment/api/payments/${payment.id}`);
+        if (cancelled) return;
+        if (response.status === 401) {
+          setSessionExpired(true);
+          return;
+        }
+        if (!response.ok) return;
         const data: PaymentResponse = await response.json();
         if (cancelled || data.status === 'PENDING') return;
         savePayment({id: data.id, status: data.status});
@@ -71,7 +80,7 @@ export default function PremiumTab({t}: {t: Translation}) {
       clearInterval(interval);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payment?.id, payment?.status]);
+  }, [payment?.id, payment?.status, me.status, sessionExpired]);
 
   const handleBuy = async () => {
     setLoading(true);
@@ -79,7 +88,7 @@ export default function PremiumTab({t}: {t: Translation}) {
     setFailureReason(null);
 
     try {
-      const response = await fetch('/api/payment/api/payments', {
+      const response = await apiFetch('/api/payment/api/payments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,6 +97,10 @@ export default function PremiumTab({t}: {t: Translation}) {
         body: JSON.stringify({amount: PREMIUM_AMOUNT, currency: PREMIUM_CURRENCY}),
       });
 
+      if (response.status === 401) {
+        setSessionExpired(true);
+        return;
+      }
       if (!response.ok) {
         throw new Error(t.premiumErrorGeneric);
       }
@@ -116,51 +129,57 @@ export default function PremiumTab({t}: {t: Translation}) {
         <p className="text-center text-gray-600">{t.premiumDescription}</p>
         <p className="text-center text-3xl font-bold text-gray-800">{t.premiumPrice}</p>
 
-        {(!payment || payment.status === 'FAILED') && (
-            <button
-                onClick={handleBuy}
-                disabled={loading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {loading ? t.premiumProcessing : t.premiumBuyButton}
-            </button>
-        )}
+        {me.status === 'anonymous' && <LoginPrompt t={t} message={t.premiumLoginRequired}/>}
+        {me.status === 'authenticated' && sessionExpired && <LoginPrompt t={t} message={t.authSessionExpired}/>}
+        {me.status === 'authenticated' && !sessionExpired && (
+            <>
+              {(!payment || payment.status === 'FAILED') && (
+                  <button
+                      onClick={handleBuy}
+                      disabled={loading}
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {loading ? t.premiumProcessing : t.premiumBuyButton}
+                  </button>
+              )}
 
-        {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              {error}
-            </div>
-        )}
+              {error && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    {error}
+                  </div>
+              )}
 
-        {payment?.status === 'PENDING' && (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
-              <div
-                  className="h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
-              <span className="text-blue-700">{t.premiumPendingNotice}</span>
-            </div>
-        )}
+              {payment?.status === 'PENDING' && (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
+                    <div
+                        className="h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
+                    <span className="text-blue-700">{t.premiumPendingNotice}</span>
+                  </div>
+              )}
 
-        {payment?.status === 'SUCCESS' && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-2">
-              <p className="font-semibold text-green-800">{t.premiumSuccessTitle}</p>
-              <p className="text-sm text-gray-600">
-                {t.premiumPaymentIdLabel} <span className="font-mono">{payment.id}</span>
-              </p>
-              <p className="text-sm text-gray-600">{t.premiumSuccessDisclaimer}</p>
-            </div>
-        )}
+              {payment?.status === 'SUCCESS' && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-2">
+                    <p className="font-semibold text-green-800">{t.premiumSuccessTitle}</p>
+                    <p className="text-sm text-gray-600">
+                      {t.premiumPaymentIdLabel} <span className="font-mono">{payment.id}</span>
+                    </p>
+                    <p className="text-sm text-gray-600">{t.premiumSuccessDisclaimer}</p>
+                  </div>
+              )}
 
-        {payment?.status === 'FAILED' && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg space-y-2">
-              <p className="font-semibold text-red-800">{t.premiumFailedTitle}</p>
-              {failureReason && <p className="text-sm text-red-700">{failureReason}</p>}
-              <button
-                  onClick={handleRetry}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-              >
-                {t.premiumRetryButton}
-              </button>
-            </div>
+              {payment?.status === 'FAILED' && (
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg space-y-2">
+                    <p className="font-semibold text-red-800">{t.premiumFailedTitle}</p>
+                    {failureReason && <p className="text-sm text-red-700">{failureReason}</p>}
+                    <button
+                        onClick={handleRetry}
+                        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    >
+                      {t.premiumRetryButton}
+                    </button>
+                  </div>
+              )}
+            </>
         )}
       </div>
   );

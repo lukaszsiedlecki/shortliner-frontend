@@ -25,4 +25,9 @@ export const pl = {
     premiumRetryButton: 'Spróbuj ponownie',
     premiumPaymentIdLabel: 'ID płatności:',
     premiumErrorGeneric: 'Wystąpił błąd podczas płatności',
+    premiumLoginRequired: 'Zaloguj się, aby kupić Premium.',
+
+    authLogIn: 'Zaloguj',
+    authLogOut: 'Wyloguj',
+    authSessionExpired: 'Twoja sesja wygasła. Zaloguj się ponownie.',
 } as const;

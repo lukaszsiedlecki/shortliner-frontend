@@ -66,6 +66,21 @@ npm run dev
 
 The application will be available at [http://localhost:3000](http://localhost:3000)
 
+### Testing login locally
+
+Login, logout and Premium go through [`shortliner-gateway`](../shortliner-gateway) (OIDC with
+Keycloak; the browser only ever holds a session cookie). To test them, run the gateway locally
+alongside `npm run dev`:
+
+```bash
+# in ~/IdeaProjects/shortliner-gateway, with FRONTEND_URL=http://localhost:3000
+./gradlew bootRun
+```
+
+and browse **http://localhost:8084**, not :3000. Browsing :3000 directly still works for
+anonymous features (link shortening) through the Next.js Route Handlers; there `/api/me` returns
+404, so the UI simply shows you as logged out.
+
 ## Docker
 
 ### Using Docker Compose (recommended)

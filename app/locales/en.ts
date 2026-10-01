@@ -25,4 +25,9 @@ export const en = {
     premiumRetryButton: 'Try again',
     premiumPaymentIdLabel: 'Payment ID:',
     premiumErrorGeneric: 'An error occurred during payment',
+    premiumLoginRequired: 'Log in to buy Premium.',
+
+    authLogIn: 'Log in',
+    authLogOut: 'Log out',
+    authSessionExpired: 'Your session has expired. Please log in again.',
 } as const;
