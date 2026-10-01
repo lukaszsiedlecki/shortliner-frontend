@@ -37,9 +37,11 @@ USER nextjs
 
 # Expose port
 EXPOSE 3000
+EXPOSE 9091
 
 # Set environment variables
 ENV PORT=3000
+ENV METRICS_PORT=9091
 ENV HOSTNAME="0.0.0.0"
 
 # Start the application

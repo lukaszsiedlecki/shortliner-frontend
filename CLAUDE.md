@@ -30,6 +30,12 @@ This is a minimal single-page Next.js 16 app. The entire UI lives in `app/page.t
 - Shortened link resolves at `/api/shortliner/shorten/{shortCode}`
 - An `/api/auth/*` proxy to a future `AUTH_BACKEND_URL` is planned once `shortliner-auth` is deployed — not added yet; follow the same Route Handler pattern, not rewrites.
 
+**Observability** (`lib/`, `instrumentation.ts`):
+- Server-side logs go through `lib/logger.ts` (pino, no transport): one JSON object per line on stdout with string `level`, `message`, ISO `time`. Proxy requests log `method`, `path`, `route`, `status`, `durationMs`, `traceId`. Next.js's own startup banner remains plain text.
+- Prometheus metrics (`lib/metrics.ts`, singleton on `globalThis` because Next bundles instrumentation and Route Handlers separately) are served by a separate `http.createServer` on `METRICS_PORT` (default `9091`) at `/metrics`, started from `instrumentation.ts`. **Never expose metrics as a Next.js route** — port 3000 is public via the Ingress.
+- `http_server_requests_seconds` histogram labels: `route` (template like `/api/shortliner/*`, never raw paths — short codes are unbounded), `method`, `status`.
+- The proxy forwards the incoming W3C `traceparent` or creates a new one, so backend traces start at the edge.
+
 **i18n** (`app/locales/`):
 - Translations are plain TypeScript objects in `pl.ts` and `en.ts`, re-exported from `index.ts`.
 - `Language` type is derived from the keys of `translations`; `Translation` type is derived from the Polish translation shape.
