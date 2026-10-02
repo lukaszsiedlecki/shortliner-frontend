@@ -53,5 +53,6 @@ This is a minimal single-page Next.js 16 app. The entire UI lives in `app/page.t
 - To add a new language: add a `{locale}.ts` file and register it in `index.ts`.
 
 **Styling**: Tailwind CSS 4 via PostCSS. No `tailwind.config.ts` — configuration is PostCSS-only (`postcss.config.mjs`).
+- Dark mode is class-based (`@custom-variant dark` in `app/globals.css`), **dark by default**: `<html className="dark">` in `layout.tsx`, and an inline `<head>` script (`themeInitScript` in `app/theme.tsx`) removes it before first paint if `localStorage.theme === 'light'`. `ThemeToggle` flips the class and saves the choice. Every light colour class needs a `dark:` counterpart.
 
 **Build output**: `next.config.ts` sets `output: 'standalone'`, which produces a self-contained Node.js bundle used by the Dockerfile.

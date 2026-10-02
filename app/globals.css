@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+/* Theme is driven by the .dark class on <html> (dark by default, see layout.tsx), not the OS setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  color-scheme: dark;
+}

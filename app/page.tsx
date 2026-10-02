@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 import {apiFetch} from '@/lib/api';
 import {AuthControls} from './auth';
+import {ThemeToggle} from './theme';
 import {Language, translations} from './locales';
 import PremiumTab from './PremiumTab';
 
@@ -70,20 +71,21 @@ export default function Home() {
   };
 
   return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-8">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
+        <div className="w-full max-w-2xl bg-white dark:bg-gray-900 rounded-lg shadow-md dark:shadow-none dark:border dark:border-gray-800 p-8">
           {/* Language Selector + auth */}
           <div className="flex justify-between items-center mb-4">
             <AuthControls t={t}/>
             <div className="flex items-center gap-2 ml-auto">
-              <label htmlFor="language" className="text-sm text-gray-600">
+              <ThemeToggle t={t}/>
+              <label htmlFor="language" className="text-sm text-gray-600 dark:text-gray-400">
                 {t.language}:
               </label>
               <select
                   id="language"
                   value={language}
                   onChange={(e) => handleLanguageChange(e.target.value as Language)}
-                  className="px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white cursor-pointer"
+                  className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-900 cursor-pointer"
               >
                 <option value="pl">Polski</option>
                 <option value="en">English</option>
@@ -91,17 +93,17 @@ export default function Home() {
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+          <h1 className="text-3xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
             {t.title}
           </h1>
 
-          <div className="flex border-b border-gray-200 mb-8">
+          <div className="flex border-b border-gray-200 dark:border-gray-700 mb-8">
             <button
                 onClick={() => setTab('shorten')}
                 className={`flex-1 py-3 font-semibold border-b-2 transition-colors ${
                     tab === 'shorten'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                        ? 'border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
             >
               {t.tabShorten}
@@ -110,8 +112,8 @@ export default function Home() {
                 onClick={() => setTab('premium')}
                 className={`flex-1 py-3 font-semibold border-b-2 transition-colors ${
                     tab === 'premium'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                        ? 'border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400'
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                 }`}
             >
               {t.tabPremium}
@@ -126,32 +128,32 @@ export default function Home() {
                       value={url}
                       onChange={(e) => setUrl(e.target.value)}
                       placeholder={t.inputPlaceholder}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-gray-100"
                   />
                 </div>
 
                 <button
                     onClick={handleGenerate}
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? t.generating : t.generateButton}
                 </button>
 
                 {error && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                    <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg text-red-700 dark:text-red-300">
                       {error}
                     </div>
                 )}
 
                 {shortCode && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <p className="text-sm text-gray-600 mb-2">{t.shortenedLinkLabel}</p>
+                    <div className="p-4 bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-900 rounded-lg">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t.shortenedLinkLabel}</p>
                       <a
                           href={`/api/shortliner/shorten/${shortCode}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-lg font-mono font-semibold text-blue-600 hover:text-blue-800 underline block break-all"
+                          className="text-lg font-mono font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline block break-all"
                       >
                         {window.location.origin}/api/shortliner/shorten/{shortCode}
                       </a>

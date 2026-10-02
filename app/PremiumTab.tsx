@@ -125,9 +125,9 @@ export default function PremiumTab({t}: {t: Translation}) {
 
   return (
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center text-gray-800">{t.premiumTitle}</h2>
-        <p className="text-center text-gray-600">{t.premiumDescription}</p>
-        <p className="text-center text-3xl font-bold text-gray-800">{t.premiumPrice}</p>
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100">{t.premiumTitle}</h2>
+        <p className="text-center text-gray-600 dark:text-gray-400">{t.premiumDescription}</p>
+        <p className="text-center text-3xl font-bold text-gray-800 dark:text-gray-100">{t.premiumPrice}</p>
 
         {me.status === 'anonymous' && <LoginPrompt t={t} message={t.premiumLoginRequired}/>}
         {me.status === 'authenticated' && sessionExpired && <LoginPrompt t={t} message={t.authSessionExpired}/>}
@@ -137,40 +137,40 @@ export default function PremiumTab({t}: {t: Translation}) {
                   <button
                       onClick={handleBuy}
                       disabled={loading}
-                      className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                      className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors"
                   >
                     {loading ? t.premiumProcessing : t.premiumBuyButton}
                   </button>
               )}
 
               {error && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                  <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg text-red-700 dark:text-red-300">
                     {error}
                   </div>
               )}
 
               {payment?.status === 'PENDING' && (
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-lg flex items-center gap-3">
                     <div
-                        className="h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"/>
-                    <span className="text-blue-700">{t.premiumPendingNotice}</span>
+                        className="h-5 w-5 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full animate-spin"/>
+                    <span className="text-blue-700 dark:text-blue-300">{t.premiumPendingNotice}</span>
                   </div>
               )}
 
               {payment?.status === 'SUCCESS' && (
-                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg space-y-2">
-                    <p className="font-semibold text-green-800">{t.premiumSuccessTitle}</p>
-                    <p className="text-sm text-gray-600">
+                  <div className="p-4 bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-900 rounded-lg space-y-2">
+                    <p className="font-semibold text-green-800 dark:text-green-300">{t.premiumSuccessTitle}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {t.premiumPaymentIdLabel} <span className="font-mono">{payment.id}</span>
                     </p>
-                    <p className="text-sm text-gray-600">{t.premiumSuccessDisclaimer}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{t.premiumSuccessDisclaimer}</p>
                   </div>
               )}
 
               {payment?.status === 'FAILED' && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg space-y-2">
-                    <p className="font-semibold text-red-800">{t.premiumFailedTitle}</p>
-                    {failureReason && <p className="text-sm text-red-700">{failureReason}</p>}
+                  <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg space-y-2">
+                    <p className="font-semibold text-red-800 dark:text-red-200">{t.premiumFailedTitle}</p>
+                    {failureReason && <p className="text-sm text-red-700 dark:text-red-300">{failureReason}</p>}
                     <button
                         onClick={handleRetry}
                         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"

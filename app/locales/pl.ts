@@ -30,4 +30,7 @@ export const pl = {
     authLogIn: 'Zaloguj',
     authLogOut: 'Wyloguj',
     authSessionExpired: 'Twoja sesja wygasła. Zaloguj się ponownie.',
+
+    themeSwitchToLight: 'Włącz jasny motyw',
+    themeSwitchToDark: 'Włącz ciemny motyw',
 } as const;

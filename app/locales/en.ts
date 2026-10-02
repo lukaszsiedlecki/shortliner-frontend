@@ -30,4 +30,7 @@ export const en = {
     authLogIn: 'Log in',
     authLogOut: 'Log out',
     authSessionExpired: 'Your session has expired. Please log in again.',
+
+    themeSwitchToLight: 'Switch to light theme',
+    themeSwitchToDark: 'Switch to dark theme',
 } as const;

@@ -75,11 +75,11 @@ export function AuthControls({t}: {t: Translation}) {
 
   return (
       <form method="post" action="/logout" onSubmit={handleLogout} className="flex items-center gap-2">
-        <span className="text-sm text-gray-700">{me.user.username}</span>
+        <span className="text-sm text-gray-700 dark:text-gray-200">{me.user.username}</span>
         <input type="hidden" name="_csrf"/>
         <button
             type="submit"
-            className={`${buttonClassName} border border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer`}
+            className={`${buttonClassName} border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer`}
         >
           {t.authLogOut}
         </button>
@@ -89,8 +89,8 @@ export function AuthControls({t}: {t: Translation}) {
 
 export function LoginPrompt({t, message}: {t: Translation; message: string}) {
   return (
-      <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg space-y-3 text-center">
-        <p className="text-yellow-800">{message}</p>
+      <div className="p-4 bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-900 rounded-lg space-y-3 text-center">
+        <p className="text-yellow-800 dark:text-yellow-200">{message}</p>
         <a
             href={LOGIN_URL}
             className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
