@@ -2,6 +2,7 @@
 
 import {useEffect, useState} from 'react';
 import {apiFetch} from '@/lib/api';
+import {randomUUID} from '@/lib/uuid';
 import {LoginPrompt, useMe} from './auth';
 import {Translation} from './locales';
 
@@ -92,7 +93,7 @@ export default function PremiumTab({t}: {t: Translation}) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Idempotency-Key': crypto.randomUUID(),
+          'Idempotency-Key': randomUUID(),
         },
         body: JSON.stringify({amount: PREMIUM_AMOUNT, currency: PREMIUM_CURRENCY}),
       });
